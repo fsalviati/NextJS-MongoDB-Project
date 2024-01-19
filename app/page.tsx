@@ -1,10 +1,9 @@
 "use client";
 import NewTodo from "./components/NewTodo";
 import TodoMain from "./components/TodoMain";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-// Declare clientPromise at the top
 export default function Home() {
   const [showNewTodo, setShowNewTodo] = useState<boolean>(false);
   const [todoList, setTodoList] = useState<
@@ -48,8 +47,49 @@ export default function Home() {
     setNewTodo(event.target.value);
   }
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/users");
+        if (response.ok) {
+          const data = await response.json();
+          setTodoList(data.todos);
+        } else {
+          console.error(
+            "Failed to fetch TODOs from MongoDB:",
+            response.statusText,
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching TODOs from MongoDB:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   function handleSaveTodo() {
-    console.log("SAVE TODO = ", todoList);
+    const saveTodos = async () => {
+      try {
+        const response = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ todos: todoList }),
+        });
+
+        if (response.ok) {
+          console.log("Todos saved successfully!");
+        } else {
+          console.error("Failed to save todos:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error saving todos:", error);
+      }
+    };
+
+    saveTodos();
   }
 
   return (
