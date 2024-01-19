@@ -1,4 +1,4 @@
-# Todo List With MongoDB
+# Todo List inetgrated with MongoDB
 This project is a simple Wishlist application built using Next.js and TypeScript, with MongoDB as the backend database. The application allows users to create, manage, and save their wishlists.
 
 Features
